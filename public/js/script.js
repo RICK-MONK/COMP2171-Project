@@ -390,6 +390,21 @@ function checkStatus() {
                     img.classList.remove('d-none');
                 }
                 if (spin) spin.classList.add('d-none');
+            } else if (d.error) {
+                title.innerText = "Connection Issue";
+                status.innerText = `${d.state || 'error'}: ${d.error}`;
+                status.className = "text-danger fw-bold";
+                if (img) img.classList.add('d-none');
+                if (spin) spin.classList.add('d-none');
+            } else {
+                const prettyState = d.state
+                    ? d.state.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+                    : 'Connecting';
+                title.innerText = "Connecting to WhatsApp";
+                status.innerText = prettyState;
+                status.className = "text-primary fw-bold";
+                if (img) img.classList.add('d-none');
+                if (spin) spin.classList.remove('d-none');
             }
         })
         .catch(err => console.error('Status fetch error', err));

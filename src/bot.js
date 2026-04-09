@@ -11,11 +11,28 @@ const { toPhone, calculateCartTotals, buildOrderFromCart, createSupplyQuote } = 
 const cleaningSupply = require('../cleaning_supply.json');
 
 function createBot({ config, ordersStore }) {
-    const client = new Client({ authStrategy: new LocalAuth() });
+    let readyTimeout = null;
+    const client = new Client({
+        authStrategy: new LocalAuth(),
+        authTimeoutMs: 60000,
+        qrMaxRetries: 5,
+        takeoverOnConflict: true,
+        takeoverTimeoutMs: 0,
+        webVersionCache: {
+            type: 'none'
+        },
+        puppeteer: {
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        }
+    });
     const userState = {};
     const userData = {};
+    const processedEvents = new Map();
     let qrCodeDataUrl = null;
     let isClientReady = false;
+    let connectionState = 'starting';
+    let lastConnectionError = null;
 
     const catalog = buildCatalog(config);
     const { productOptions, blindCategoryLabels, getCategoryProducts } = catalog;
@@ -88,6 +105,15 @@ function createBot({ config, ordersStore }) {
     const sendFulfillmentPoll = async (userId, prompt = 'Choose delivery method to place order:') => {
         const poll = new Poll(prompt, fulfillmentOptions);
         await client.sendMessage(userId, poll);
+    };
+    const markEventProcessed = (key, ttlMs = 30_000) => {
+        const now = Date.now();
+        for (const [existingKey, expiresAt] of processedEvents.entries()) {
+            if (expiresAt <= now) processedEvents.delete(existingKey);
+        }
+        if (processedEvents.has(key)) return true;
+        processedEvents.set(key, now + ttlMs);
+        return false;
     };
 
     function createOrderId() {
@@ -168,20 +194,79 @@ function createBot({ config, ordersStore }) {
     }
 
     client.on('qr', (qr) => {
+        if (readyTimeout) clearTimeout(readyTimeout);
         qrcodeTerminal.generate(qr, { small: true });
+        connectionState = 'qr';
+        lastConnectionError = null;
         QRCode.toDataURL(qr, (err, url) => {
             if (!err) { qrCodeDataUrl = url; isClientReady = false; }
         });
     });
 
+    client.on('authenticated', () => {
+        connectionState = 'authenticated';
+        lastConnectionError = null;
+        qrCodeDataUrl = null;
+        console.log('WhatsApp authenticated');
+        if (readyTimeout) clearTimeout(readyTimeout);
+        readyTimeout = setTimeout(() => {
+            if (!isClientReady) {
+                console.error('WhatsApp did not reach ready state within 45 seconds after authentication. This usually indicates a browser/runtime compatibility or stale session issue.');
+            }
+        }, 45_000);
+    });
+
     client.on('ready', () => {
+        if (readyTimeout) clearTimeout(readyTimeout);
         console.log('>>> SYSTEM ONLINE <<<');
         isClientReady = true;
+        connectionState = 'ready';
+        lastConnectionError = null;
         qrCodeDataUrl = null;
+    });
+
+    client.on('loading_screen', (percent, message) => {
+        connectionState = 'loading';
+        lastConnectionError = null;
+        qrCodeDataUrl = null;
+        console.log(`WhatsApp loading: ${percent}% ${message || ''}`.trim());
+    });
+
+    client.on('auth_failure', (message) => {
+        if (readyTimeout) clearTimeout(readyTimeout);
+        isClientReady = false;
+        connectionState = 'auth_failure';
+        lastConnectionError = message || 'Authentication failed';
+        console.error('WhatsApp auth failure', message);
+    });
+
+    client.on('disconnected', (reason) => {
+        if (readyTimeout) clearTimeout(readyTimeout);
+        isClientReady = false;
+        connectionState = 'disconnected';
+        lastConnectionError = reason || 'Client disconnected';
+        qrCodeDataUrl = null;
+        console.error('WhatsApp disconnected', reason);
+    });
+
+    client.on('change_state', (state) => {
+        connectionState = String(state || '').toLowerCase() || connectionState;
+        if (connectionState !== 'qr') qrCodeDataUrl = null;
+        console.log('WhatsApp state changed:', state);
+    });
+
+    client.on('error', (err) => {
+        if (readyTimeout) clearTimeout(readyTimeout);
+        isClientReady = false;
+        connectionState = 'error';
+        lastConnectionError = err?.message || String(err);
+        console.error('WhatsApp client error', err);
     });
 
     client.on('message', async msg => {
         if (msg.from.includes('status')) return;
+        const messageKey = msg.id?._serialized || `${msg.from}:${msg.timestamp}:${msg.body}`;
+        if (markEventProcessed(`message:${messageKey}`)) return;
 
         const userId = msg.from;
         const text = msg.body.toLowerCase();
@@ -413,6 +498,10 @@ function createBot({ config, ordersStore }) {
 
     client.on('vote_update', async (vote) => {
         if (vote.selectedOptions.length === 0) return;
+        const voteKey = vote.parentMsgKey?._serialized
+            ? `${vote.voter}:${vote.parentMsgKey._serialized}:${vote.selectedOptions.map(o => o.name).join('|')}`
+            : `${vote.voter}:${vote.selectedOptions.map(o => o.name).join('|')}`;
+        if (markEventProcessed(`vote:${voteKey}`)) return;
         const userId = vote.voter;
         const optionRaw = vote.selectedOptions[0].name;
         const option = optionRaw.replace(/^[^a-zA-Z0-9]+/, '').trim();
@@ -808,7 +897,12 @@ function createBot({ config, ordersStore }) {
 
     client.initialize();
 
-    const getSystemStatus = () => ({ ready: isClientReady, qr: qrCodeDataUrl });
+    const getSystemStatus = () => ({
+        ready: isClientReady,
+        qr: qrCodeDataUrl,
+        state: connectionState,
+        error: lastConnectionError
+    });
 
     return { client, getSystemStatus };
 }
