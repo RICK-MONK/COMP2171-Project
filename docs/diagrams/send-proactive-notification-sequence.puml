@@ -1,0 +1,25 @@
+@startuml
+title Figure 5.17: Send Proactive Notification Sequence Diagram
+
+actor Administrator
+participant "Dashboard Script\n(public/js/script.js)" as Script
+participant "API Server\n(src/server.js)" as Api
+participant "Orders Store\n(src/orders.js)" as Orders
+participant "WhatsApp Client" as WhatsApp
+actor Customer
+
+Administrator -> Script : Change order status
+Script -> Api : PUT /api/orders/:id {status}
+Api -> Orders : updateOrder(id, updates)
+Orders --> Api : updated order + oldStatus
+Api -> Api : status changed?
+Api -> WhatsApp : sendMessage("Status changed to ...")
+WhatsApp --> Customer : Proactive status message
+Api --> Script : success response
+
+note right of Api
+If WhatsApp delivery fails, the status remains updated
+and the error is logged asynchronously.
+end note
+
+@enduml

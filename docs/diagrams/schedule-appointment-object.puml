@@ -1,0 +1,26 @@
+@startuml
+title Figure 5.3: Schedule Appointment Object Diagram
+
+object "customer1:Customer" as customer1 {
+  phoneNumber = "8765550101"
+  displayName = "Customer"
+}
+
+object "order1:Order" as order1 {
+  id = "2100370"
+  status = "PENDING DELIVERY"
+  scheduledDate = "2026-04-15"
+  scheduleTime = "2:30 PM"
+  fulfillment = "Delivery (3-4 Days)"
+}
+
+object "session:BotConversationState" as session {
+  state = "manage_resched_time"
+  manageOrderId = "2100370"
+  reschedDate = "2026-04-15"
+}
+
+customer1 -- order1
+session -- order1
+
+@enduml

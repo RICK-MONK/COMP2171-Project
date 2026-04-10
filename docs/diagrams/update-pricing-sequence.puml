@@ -1,0 +1,23 @@
+@startuml
+title Figure 5.10: Update Pricing Sequence Diagram
+
+actor "System Administrator" as Maintainer
+participant "prices.json" as PriceFile
+participant "Configuration Loader\n(src/config.js)" as Config
+participant "Pricing Service\n(src/pricing.js)" as Pricing
+participant "Application Runtime" as Runtime
+
+Maintainer -> PriceFile : Edit product catalog values
+Maintainer -> Runtime : Restart application
+Runtime -> Config : load prices.json
+Config -> PriceFile : read file
+PriceFile --> Config : catalog data
+Config --> Runtime : exported prices object
+Runtime -> Pricing : use updated catalog for quotes
+
+note right of Maintainer
+TODO: The current implementation supports file-based
+price maintenance only. No runtime dashboard API exists.
+end note
+
+@enduml

@@ -1,31 +1,134 @@
 [
   {
-    "id": 6378,
-    "date": "11/29/2025",
-    "name": "Customer",
+    "id": "2364594",
+    "date": "3/23/2026",
+    "name": "Rick Don",
     "phone": "18767835744",
-    "details": "34\" x 36\" (Illusion Roller Shades (Cat 3))",
-    "price": "20631.00",
+    "items": [
+      {
+        "width": 30,
+        "height": 30,
+        "quantity": 1,
+        "product": "Illusion Roller Shades (Cat 3)",
+        "priceBreakdown": {
+          "base": 12608,
+          "install": 1500,
+          "subtotal": 14108,
+          "gct": 2116.2
+        }
+      }
+    ],
+    "details": "30\" x 30\" (Illusion Roller Shades (Cat 3))",
+    "price": "16224.20",
+    "email": "N/A",
+    "fulfillment": "Pickup",
+    "priceBreakdown": {
+      "base": 12608,
+      "install": 1500,
+      "subtotal": 14108,
+      "gct": 2116.2
+    },
+    "status": "IN PROGRESS"
+  },
+  {
+    "id": "0161166",
+    "date": "3/23/2026",
+    "name": "Rick Don",
+    "phone": "18767835744",
+    "items": [
+      {
+        "width": 30,
+        "height": 30,
+        "quantity": 1,
+        "product": "Illusion Roller Shades (Cat 3)",
+        "priceBreakdown": {
+          "base": 12608,
+          "install": 1500,
+          "subtotal": 14108,
+          "gct": 2116.2
+        }
+      }
+    ],
+    "details": "30\" x 30\" (Illusion Roller Shades (Cat 3))",
+    "price": "16224.20",
+    "email": "N/A",
+    "fulfillment": "Pickup",
+    "priceBreakdown": {
+      "base": 12608,
+      "install": 1500,
+      "subtotal": 14108,
+      "gct": 2116.2
+    },
+    "status": "IN PROGRESS",
+    "scheduledDate": "2026-03-27",
+    "reminderTime": "2026-03-23T21:11:00.000Z",
+    "reminderSent": true,
+    "reminderSentAt": "2026-03-23T21:11:24.657Z"
+  },
+  {
+    "id": "2112019",
+    "date": "12/4/2025",
+    "name": "Rick Don",
+    "phone": "18767835744",
+    "items": [
+      {
+        "width": 30,
+        "height": 30,
+        "quantity": 1,
+        "product": "2\" Facade Horizontal Blinds",
+        "priceBreakdown": {
+          "base": 8918,
+          "install": 1500,
+          "subtotal": 10418,
+          "gct": 1562.7
+        }
+      }
+    ],
+    "details": "30\" x 30\" (2\" Facade Horizontal Blinds)",
+    "price": "11980.70",
     "email": "pmarsden2k5@gmail.com",
-    "fulfillment": "Delivery (3-4 Days)",
-    "status": "PENDING DELIVERY"
+    "fulfillment": "Pickup",
+    "priceBreakdown": {
+      "base": 8918,
+      "install": 1500,
+      "subtotal": 10418,
+      "gct": 1562.7
+    },
+    "status": "READY",
+    "reminderTime": "2025-12-04T18:16:00.000Z",
+    "reminderSent": true,
+    "reminderSentAt": "2025-12-04T18:16:20.602Z"
   },
   {
-    "id": 2516,
-    "date": "11/29/2025",
+    "id": "1337146",
+    "date": "12/4/2025",
     "name": "Rick Don",
     "phone": "18767835744",
-    "details": "34\" x 36\" (Illusion Roller Shades (Cat 3))",
-    "price": "20631.00",
-    "status": "PENDING DELIVERY"
-  },
-  {
-    "id": 6971,
-    "date": "11/29/2025",
-    "name": "Rick Don",
-    "phone": "18767835744",
-    "details": "36\" x 48\" Blinds",
-    "price": "14400.00",
-    "status": "PENDING DELIVERY"
+    "items": [
+      {
+        "width": 30,
+        "height": 30,
+        "quantity": 1,
+        "product": "2\" Facade Horizontal Blinds",
+        "priceBreakdown": {
+          "base": 8918,
+          "install": 1500,
+          "subtotal": 10418,
+          "gct": 1562.7
+        }
+      }
+    ],
+    "details": "30\" x 30\" (2\" Facade Horizontal Blinds)",
+    "price": "11980.70",
+    "email": "N/A",
+    "fulfillment": "Pickup",
+    "priceBreakdown": {
+      "base": 8918,
+      "install": 1500,
+      "subtotal": 10418,
+      "gct": 1562.7
+    },
+    "status": "READY",
+    "scheduledDate": "2025-12-04"
   }
 ]

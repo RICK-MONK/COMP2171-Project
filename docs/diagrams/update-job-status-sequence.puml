@@ -1,0 +1,21 @@
+@startuml
+title Figure 5.12: Update Job Status Sequence Diagram
+
+actor Administrator
+participant "Dashboard Script\n(public/js/script.js)" as Script
+participant "API Server\n(src/server.js)" as Api
+participant "Orders Store\n(src/orders.js)" as Orders
+participant "WhatsApp Client" as WhatsApp
+actor Customer
+
+Administrator -> Script : Select new status for order
+Script -> Api : PUT /api/orders/:id {status}
+Api -> Orders : updateOrder(id, updates)
+Orders --> Api : updated order + oldStatus
+Api -> Api : compare new status with old status
+Api -> WhatsApp : sendMessage(status changed)
+WhatsApp --> Customer : Status update message
+Api --> Script : success response
+Script --> Administrator : Updated dashboard state
+
+@enduml

@@ -1,0 +1,31 @@
+@startuml
+title Figure 3.2: Schedule Appointment Activity Diagram
+
+start
+:Customer selects "Manage Orders";
+:System lists active orders;
+if (Any active order?) then (yes)
+  :Customer selects an order;
+  :System shows order details and actions;
+  :Customer chooses "Reschedule";
+  :Prompt for new date;
+  if (Valid date?) then (yes)
+    :Prompt for new time;
+    if (Valid time?) then (yes)
+      :Update scheduledDate and scheduleTime;
+      :Send confirmation message;
+      stop
+    else (no)
+      :Show invalid time message;
+      stop
+    endif
+  else (no)
+    :Show invalid date message;
+    stop
+  endif
+else (no)
+  :Show "No upcoming appointments found";
+  stop
+endif
+
+@enduml

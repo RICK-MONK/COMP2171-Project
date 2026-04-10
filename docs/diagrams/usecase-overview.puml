@@ -1,0 +1,38 @@
+@startuml
+title Figure 3.1: Use Case Overview
+left to right direction
+
+actor Customer
+actor Administrator
+actor "System Administrator" as Maintainer
+
+rectangle "White Rose WhatsApp Order System" {
+  usecase "Request Quote" as UCQuote
+  usecase "Confirm Order" as UCOrder
+  usecase "Manage Orders" as UCManage
+  usecase "Schedule Appointment" as UCSchedule
+  usecase "Receive Reminders" as UCReminders
+  usecase "View Dashboard" as UCDashboard
+  usecase "Update Job Status" as UCStatus
+  usecase "Send Completion Message" as UCCompletion
+  usecase "Send Proactive Notification" as UCProactive
+  usecase "Update Pricing" as UCPricing
+}
+
+Customer --> UCQuote
+Customer --> UCOrder
+Customer --> UCManage
+Customer --> UCSchedule
+Customer --> UCReminders
+
+Administrator --> UCDashboard
+Administrator --> UCStatus
+Administrator --> UCCompletion
+Administrator --> UCProactive
+
+Maintainer --> UCPricing
+
+UCManage .> UCSchedule : <<include>>
+UCStatus .> UCProactive : <<include>>
+
+@enduml
