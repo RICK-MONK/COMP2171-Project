@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Use Case Diagram 2</title>
+  <desc id="desc">WhatsApp Chatbot System use case diagram with red-marked items removed.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"/>
+    </marker>
+    <style>
+      .title { font: 700 40px Arial, sans-serif; fill: #111; }
+      .label { font: 16px Arial, sans-serif; fill: #111; }
+      .small { font: 14px Arial, sans-serif; fill: #111; }
+      .actor { stroke: #666; stroke-width: 2; fill: none; }
+      .system { fill: #fff; stroke: #666; stroke-width: 2; }
+      .usecase { fill: #fff; stroke: #666; stroke-width: 2; }
+      .line { stroke: #444; stroke-width: 2; fill: none; }
+      .dashed { stroke: #666; stroke-width: 2; fill: none; stroke-dasharray: 8 6; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1400" height="900" fill="#f4f7fb"/>
+  <text x="700" y="60" text-anchor="middle" class="title">Use Case Diagram 2</text>
+
+  <rect x="300" y="110" width="760" height="700" class="system"/>
+  <text x="680" y="145" text-anchor="middle" class="label" font-weight="700">WhatsApp Chatbot System</text>
+
+  <ellipse cx="470" cy="190" rx="110" ry="24" class="usecase"/>
+  <text x="470" y="196" text-anchor="middle" class="small">Request Quotation</text>
+
+  <ellipse cx="470" cy="255" rx="120" ry="24" class="usecase"/>
+  <text x="470" y="261" text-anchor="middle" class="small">Schedule Appointment</text>
+
+  <ellipse cx="470" cy="320" rx="110" ry="24" class="usecase"/>
+  <text x="470" y="326" text-anchor="middle" class="small">Receive Reminders</text>
+
+  <ellipse cx="470" cy="385" rx="100" ry="24" class="usecase"/>
+  <text x="470" y="391" text-anchor="middle" class="small">Cancel Booking</text>
+
+  <ellipse cx="470" cy="450" rx="90" ry="24" class="usecase"/>
+  <text x="470" y="456" text-anchor="middle" class="small">Edit Booking</text>
+
+  <ellipse cx="470" cy="515" rx="115" ry="24" class="usecase"/>
+  <text x="470" y="521" text-anchor="middle" class="small">Check Order Status</text>
+
+  <ellipse cx="760" cy="610" rx="100" ry="24" class="usecase"/>
+  <text x="760" y="616" text-anchor="middle" class="small">Fetch Job Status</text>
+
+  <ellipse cx="760" cy="675" rx="135" ry="24" class="usecase"/>
+  <text x="760" y="681" text-anchor="middle" class="small">Send Proactive Notification</text>
+
+  <ellipse cx="760" cy="740" rx="100" ry="24" class="usecase"/>
+  <text x="760" y="746" text-anchor="middle" class="small">Send Status Update</text>
+
+  <ellipse cx="760" cy="805" rx="135" ry="24" class="usecase"/>
+  <text x="760" y="811" text-anchor="middle" class="small">Send Completion Message</text>
+
+  <circle cx="140" cy="290" r="16" class="actor"/>
+  <line x1="140" y1="306" x2="140" y2="355" class="actor"/>
+  <line x1="110" y1="325" x2="170" y2="325" class="actor"/>
+  <line x1="140" y1="355" x2="115" y2="400" class="actor"/>
+  <line x1="140" y1="355" x2="165" y2="400" class="actor"/>
+  <text x="140" y="425" text-anchor="middle" class="label">Customer</text>
+
+  <circle cx="140" cy="640" r="16" class="actor"/>
+  <line x1="140" y1="656" x2="140" y2="705" class="actor"/>
+  <line x1="110" y1="675" x2="170" y2="675" class="actor"/>
+  <line x1="140" y1="705" x2="115" y2="750" class="actor"/>
+  <line x1="140" y1="705" x2="165" y2="750" class="actor"/>
+  <text x="140" y="775" text-anchor="middle" class="label">Admin/Staff</text>
+
+  <circle cx="1220" cy="615" r="16" class="actor"/>
+  <line x1="1220" y1="631" x2="1220" y2="680" class="actor"/>
+  <line x1="1190" y1="650" x2="1250" y2="650" class="actor"/>
+  <line x1="1220" y1="680" x2="1195" y2="725" class="actor"/>
+  <line x1="1220" y1="680" x2="1245" y2="725" class="actor"/>
+  <text x="1220" y="595" text-anchor="middle" class="small">&lt;&lt;System&gt;&gt;</text>
+  <text x="1220" y="750" text-anchor="middle" class="label">Orders Database</text>
+
+  <circle cx="1220" cy="760" r="16" class="actor"/>
+  <line x1="1220" y1="776" x2="1220" y2="825" class="actor"/>
+  <line x1="1190" y1="795" x2="1250" y2="795" class="actor"/>
+  <line x1="1220" y1="825" x2="1195" y2="870" class="actor"/>
+  <line x1="1220" y1="825" x2="1245" y2="870" class="actor"/>
+  <text x="1220" y="740" text-anchor="middle" class="small">&lt;&lt;System&gt;&gt;</text>
+  <text x="1220" y="895" text-anchor="middle" class="label">WhatsApp API</text>
+
+  <line x1="156" y1="290" x2="360" y2="190" class="line" marker-end="url(#arrow)"/>
+  <line x1="156" y1="300" x2="350" y2="255" class="line" marker-end="url(#arrow)"/>
+  <line x1="156" y1="315" x2="360" y2="320" class="line" marker-end="url(#arrow)"/>
+  <line x1="156" y1="330" x2="365" y2="385" class="line" marker-end="url(#arrow)"/>
+  <line x1="156" y1="345" x2="375" y2="450" class="line" marker-end="url(#arrow)"/>
+  <line x1="156" y1="360" x2="355" y2="515" class="line" marker-end="url(#arrow)"/>
+
+  <line x1="156" y1="670" x2="625" y2="675" class="line" marker-end="url(#arrow)"/>
+  <line x1="156" y1="685" x2="625" y2="805" class="line" marker-end="url(#arrow)"/>
+
+  <line x1="585" y1="515" x2="660" y2="610" class="dashed" marker-end="url(#arrow)"/>
+  <text x="615" y="555" class="small">&lt;&lt;include&gt;&gt;</text>
+
+  <line x1="685" y1="690" x2="710" y2="726" class="dashed" marker-end="url(#arrow)"/>
+  <text x="640" y="710" class="small">&lt;&lt;include&gt;&gt;</text>
+
+  <line x1="705" y1="792" x2="722" y2="764" class="dashed" marker-end="url(#arrow)"/>
+  <text x="650" y="790" class="small">&lt;&lt;include&gt;&gt;</text>
+
+  <line x1="860" y1="610" x2="1204" y2="615" class="line" marker-end="url(#arrow)"/>
+  <line x1="860" y1="740" x2="1204" y2="760" class="line" marker-end="url(#arrow)"/>
+</svg>

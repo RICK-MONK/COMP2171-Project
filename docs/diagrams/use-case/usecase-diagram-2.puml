@@ -1,0 +1,42 @@
+@startuml
+title Use Case Diagram 2
+left to right direction
+
+skinparam packageStyle rectangle
+
+actor Customer
+actor "Admin/Staff" as AdminStaff
+actor "Orders Database" as OrdersDb <<system>>
+actor "WhatsApp API" as WhatsAppApi <<system>>
+
+rectangle "WhatsApp Chatbot System" {
+  usecase "Request Quotation" as UCQuote
+  usecase "Schedule Appointment" as UCSchedule
+  usecase "Receive Reminders" as UCReminders
+  usecase "Cancel Booking" as UCCancel
+  usecase "Edit Booking" as UCEdit
+  usecase "Check Order Status" as UCCheck
+  usecase "Send Proactive Notification" as UCProactive
+  usecase "Send Completion Message" as UCCompletion
+  usecase "Fetch Job Status" as UCFetch
+  usecase "Send Status Update" as UCSendStatus
+}
+
+Customer --> UCQuote
+Customer --> UCSchedule
+Customer --> UCReminders
+Customer --> UCCancel
+Customer --> UCEdit
+Customer --> UCCheck
+
+AdminStaff --> UCProactive
+AdminStaff --> UCCompletion
+
+UCCheck .> UCFetch : <<include>>
+UCProactive .> UCSendStatus : <<include>>
+UCCompletion .> UCSendStatus : <<include>>
+
+UCFetch --> OrdersDb
+UCSendStatus --> WhatsAppApi
+
+@enduml
