@@ -1,0 +1,17 @@
+@startuml
+title Cancel Booking Activity Diagram
+
+start
+:Customer opens manage-orders flow;
+:Select booking and choose "Cancel";
+:Request cancellation confirmation;
+if (Customer confirms?) then (yes)
+  :Delete booking from orders store;
+  :Send cancellation confirmation;
+  stop
+else (no)
+  :Abort cancellation;
+  stop
+endif
+
+@enduml

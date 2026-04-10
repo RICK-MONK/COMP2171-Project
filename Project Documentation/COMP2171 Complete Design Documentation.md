@@ -23,10 +23,12 @@ This document aligns the design discussion with the implemented repository and g
 
 ## 2. Domain Model
 
-### Figure 2.1: Domain Model
-Diagram source: `../docs/diagrams/domain-model.puml`
+Note: Every diagram in this document is presented with a title and a short explanation.
 
-This domain model identifies the principal business entities and relationships implemented in the project. A `Customer` can create and manage `Order` records. Each `Order` aggregates one or more `OrderItem` entries derived from the pricing catalog, may carry scheduling and reminder information, and may generate an `InvoiceDocument`. Administrators review and update orders through the dashboard, while `ReminderLog` entries record automated reminder attempts.
+### Domain Model
+Diagram source: `../docs/diagrams/domain/domain-model.puml`
+
+Short explanation: This domain model identifies the principal business entities and relationships implemented in the project. A `Customer` can create and manage `Order` records. Each `Order` aggregates one or more `OrderItem` entries derived from the pricing catalog, may carry scheduling and reminder information, and may generate an `InvoiceDocument`. Administrators review and update orders through the dashboard, while `ReminderLog` entries record automated reminder attempts.
 
 The domain model is intentionally focused on persistent business concepts instead of low-level framework classes. This keeps the analysis aligned with the problem domain while still matching the JSON files and service modules used by the application.
 
@@ -34,10 +36,10 @@ The domain model is intentionally focused on persistent business concepts instea
 
 ### 3.1 Use Case Diagram
 
-#### Figure 3.1: Use Case Overview
-Diagram source: `../docs/diagrams/usecase-overview.puml`
+#### Use Case Overview
+Diagram source: `../docs/diagrams/use-case/usecase-overview.puml`
 
-This diagram shows the externally visible interactions between customers, administrators, and the implemented system. It includes both customer-facing chatbot behaviour and staff-facing administrative actions. The assigned responsibilities are highlighted as first-class use cases rather than left as implied dashboard actions.
+Short explanation: This use case diagram shows the externally visible interactions between customers, administrators, and the implemented system. It includes both customer-facing chatbot behaviour and staff-facing administrative actions. The assigned responsibilities are highlighted as first-class use cases rather than left as implied dashboard actions.
 
 ### 3.2 Use Case Specifications
 
@@ -301,147 +303,411 @@ Alternative and exception flows:
 
 Implementation trace: `src/server.js`, `src/orders.js`
 
-### 3.3 Activity Diagram
+#### 3.2.8 Request Quotation
 
-#### Figure 3.2: Schedule Appointment Activity Diagram
-Diagram source: `../docs/diagrams/schedule-appointment-activity.puml`
+Purpose: Allow a customer to request a product quotation and receive an estimate through the WhatsApp chatbot.
 
-This activity diagram expands the appointment-related conversation path used in the implemented chatbot. It shows the validation checkpoints that protect the integrity of `scheduledDate` and `scheduleTime` before the order record is updated.
+Primary actor: Customer
+
+Supporting actors: WhatsApp Bot, Pricing Service, Order Utilities, Invoice Service
+
+Trigger: The customer selects a product flow from `Goods/Services`.
+
+Preconditions:
+
+- The catalog data is available.
+- The selected product exists in the configured catalog.
+
+Postconditions:
+
+- The customer receives an estimate summary.
+- The system can generate an estimate PDF for the selected items.
+
+Main success scenario:
+
+1. The customer opens the goods and services flow.
+2. The system presents product categories and options.
+3. The customer selects a product and enters dimensions or quantity.
+4. The pricing service calculates the estimate.
+5. The chatbot displays the quotation details.
+6. The customer chooses to finish and receive a PDF estimate.
+
+Alternative and exception flows:
+
+- Invalid dimensions or quantity trigger corrected-input prompts.
+- Unavailable size combinations trigger fallback guidance or support contact.
+
+Implementation trace: `src/bot.js`, `src/pricing.js`, `src/orderUtils.js`, `src/invoice.js`
+
+#### 3.2.9 Check Order Status
+
+Purpose: Allow a customer to retrieve the status of stored orders linked to the current WhatsApp phone number.
+
+Primary actor: Customer
+
+Supporting actors: WhatsApp Bot, Order Helpers, Orders Store
+
+Trigger: The customer selects `Get Order Status`.
+
+Preconditions:
+
+- The customer has at least one order associated with the current phone number.
+
+Postconditions:
+
+- The system displays the status of matching orders.
+
+Main success scenario:
+
+1. The customer selects `Get Order Status`.
+2. The system maps the WhatsApp number to stored orders.
+3. The orders store returns matching orders.
+4. The chatbot formats and returns the status list.
+
+Alternative and exception flows:
+
+- If no matching orders exist, the chatbot reports that no pending orders were found.
+
+Implementation trace: `src/bot.js`, `src/botHelpers.js`, `src/orders.js`
+
+#### 3.2.10 Retrieve Booking
+
+Purpose: Allow a customer to retrieve active bookings before choosing a self-service order-management action.
+
+Primary actor: Customer
+
+Supporting actors: WhatsApp Bot, Order Helpers, Orders Store
+
+Trigger: The customer selects `Manage Orders`.
+
+Preconditions:
+
+- The customer has one or more active orders.
+
+Postconditions:
+
+- The system shows a selectable list of active bookings.
+
+Main success scenario:
+
+1. The customer selects `Manage Orders`.
+2. The system loads the customer's orders.
+3. Completed and cancelled bookings are filtered out.
+4. The chatbot presents the remaining bookings as selectable options.
+
+Alternative and exception flows:
+
+- If no active bookings are available, the chatbot reports that no upcoming appointments were found.
+
+Implementation trace: `src/bot.js`, `src/botHelpers.js`, `src/orders.js`
+
+#### 3.2.11 Cancel Booking
+
+Purpose: Allow a customer to cancel an existing booking through the self-service manage-orders flow.
+
+Primary actor: Customer
+
+Supporting actors: WhatsApp Bot, Orders Store
+
+Trigger: The customer selects an active booking and chooses `Cancel`.
+
+Preconditions:
+
+- The selected booking exists and is still active.
+
+Postconditions:
+
+- The selected booking is removed from active storage.
+- The customer receives a cancellation confirmation message.
+
+Main success scenario:
+
+1. The customer opens `Manage Orders`.
+2. The system presents active bookings.
+3. The customer selects a booking and chooses `Cancel`.
+4. The chatbot asks for confirmation.
+5. The customer confirms the cancellation.
+6. The orders store deletes the booking.
+7. The chatbot confirms the result.
+
+Alternative and exception flows:
+
+- If the booking no longer exists, the chatbot reports that cancellation could not be completed.
+- If the customer selects `No`, the cancellation request is aborted.
+
+Implementation trace: `src/bot.js`, `src/orders.js`
+
+### 3.3 Activity Diagrams
+
+#### 3.3.1 Schedule Appointment Activity Diagram
+Diagram source: `../docs/diagrams/activity/schedule-appointment-activity.puml`
+
+Short explanation: This activity diagram expands the appointment-related conversation path used in the implemented chatbot. It shows the validation checkpoints that protect the integrity of `scheduledDate` and `scheduleTime` before the order record is updated.
+
+#### 3.3.2 Receive Reminders Activity Diagram
+Diagram source: `../docs/diagrams/activity/receive-reminders-activity.puml`
+
+Short explanation: This activity diagram shows the reminder lifecycle from scheduler tick to due-order detection, reminder delivery, and reminder logging. It also captures the branch where the WhatsApp client is not ready or message delivery fails.
+
+#### 3.3.3 View Dashboard Activity Diagram
+Diagram source: `../docs/diagrams/activity/view-dashboard-activity.puml`
+
+Short explanation: This activity diagram models the admin path from login to authenticated dashboard loading. It includes both successful token-based access and the main error branches for invalid credentials or failed API loading.
+
+#### 3.3.4 Update Pricing Activity Diagram
+Diagram source: `../docs/diagrams/activity/update-pricing-activity.puml`
+
+Short explanation: This activity diagram documents the file-based pricing maintenance process used by the current implementation. It reflects editing `prices.json`, validating the catalog data, and reloading the application so new quotations use the revised values.
+
+#### 3.3.5 Update Job Status Activity Diagram
+Diagram source: `../docs/diagrams/activity/update-job-status-activity.puml`
+
+Short explanation: This activity diagram shows the admin workflow for changing an order status from the dashboard. It includes persistence of the new status and the follow-on proactive notification attempt when the status has actually changed.
+
+#### 3.3.6 Send Completion Message Activity Diagram
+Diagram source: `../docs/diagrams/activity/send-completion-message-activity.puml`
+
+Short explanation: This activity diagram describes the explicit ready-notification flow started from the dashboard. It focuses on the server-side validation of the order and the delivery path for the customer-facing completion message.
+
+#### 3.3.7 Send Proactive Notification Activity Diagram
+Diagram source: `../docs/diagrams/activity/send-proactive-notification-activity.puml`
+
+Short explanation: This activity diagram isolates the proactive-notification behaviour that occurs after a status update. It shows the decision point where unchanged statuses do not trigger a message and includes the failure branch for WhatsApp delivery.
+
+#### 3.3.8 Request Quotation Activity Diagram
+Diagram source: `../docs/diagrams/activity/request-quotation-activity.puml`
+
+Short explanation: This activity diagram models the quotation path from product selection through price calculation and estimate generation. It reflects the implemented flow where the customer provides dimensions or quantity before the bot generates an estimate PDF.
+
+#### 3.3.9 Check Order Status Activity Diagram
+Diagram source: `../docs/diagrams/activity/check-order-status-activity.puml`
+
+Short explanation: This activity diagram shows the customer path for retrieving order statuses linked to the active WhatsApp phone number. It includes the branch where no matching orders exist in storage.
+
+#### 3.3.10 Retrieve Booking Activity Diagram
+Diagram source: `../docs/diagrams/activity/retrieve-booking-activity.puml`
+
+Short explanation: This activity diagram shows the order-management entry path where the system loads customer orders, filters active bookings, and presents a selectable list for follow-up actions.
+
+#### 3.3.11 Cancel Booking Activity Diagram
+Diagram source: `../docs/diagrams/activity/cancel-booking-activity.puml`
+
+Short explanation: This activity diagram models the booking-cancellation flow, including the confirmation checkpoint before the record is deleted from the orders store.
 
 ## 4. Architectural Design
 
 ### 4.1 Package Diagram
 
-#### Figure 4.1: Package Diagram
-Diagram source: `../docs/diagrams/package-diagram.puml`
+#### Package Diagram
+Diagram source: `../docs/diagrams/architecture/package-diagram.puml`
 
-This package diagram groups the repository into coherent design units. The presentation assets live under `public/`, the HTTP and conversational logic live under `src/`, and the file-backed data sources remain at repository root. The diagram mirrors the repository structure rather than an abstract textbook layering.
+Short explanation: This package diagram groups the repository into coherent design units. The presentation assets live under `public/`, the HTTP and conversational logic live under `src/`, and the file-backed data sources remain at repository root. The diagram mirrors the repository structure rather than an abstract textbook layering.
 
 ### 4.2 Component Diagram
 
-#### Figure 4.2: Component Diagram
-Diagram source: `../docs/diagrams/component-diagram.puml`
+#### Component Diagram
+Diagram source: `../docs/diagrams/architecture/component-diagram.puml`
 
-This component diagram shows the runtime dependencies between the dashboard, API server, bot controller, pricing logic, order storage, reminder scheduler, and supporting services for PDF and email generation. It captures the interaction boundaries that matter operationally in this implementation.
+Short explanation: This component diagram shows the runtime dependencies between the dashboard, API server, bot controller, pricing logic, order storage, reminder scheduler, and supporting services for PDF and email generation. It captures the interaction boundaries that matter operationally in this implementation.
 
 ### 4.3 Deployment Diagram
 
-#### Figure 4.3: Deployment Diagram
-Diagram source: `../docs/diagrams/deployment-diagram.puml`
+#### Deployment Diagram
+Diagram source: `../docs/diagrams/architecture/deployment-diagram.puml`
 
-This deployment diagram models the practical execution environment of the application. Customer traffic reaches the system through WhatsApp, administrative traffic reaches it through a browser, and the Node.js host coordinates both channels while persisting local JSON files on the same machine.
+Short explanation: This deployment diagram models the practical execution environment of the application. Customer traffic reaches the system through WhatsApp, administrative traffic reaches it through a browser, and the Node.js host coordinates both channels while persisting local JSON files on the same machine.
 
 ## 5. Detailed Design
 
 ### 5.1 Class Diagram
 
-#### Figure 5.1: Logical Class Diagram
-Diagram source: `../docs/diagrams/class-diagram.puml`
+#### Logical Class Diagram
+Diagram source: `../docs/diagrams/class/class-diagram.puml`
 
-This class diagram uses logical service classes to describe the structure of the JavaScript modules. Although the repository is implemented with CommonJS modules and exported functions instead of ES6 classes, the diagram accurately reflects the responsibilities, data handled, and major operations of each module.
+Short explanation: This class diagram uses logical service classes to describe the structure of the JavaScript modules. Although the repository is implemented with CommonJS modules and exported functions instead of ES6 classes, the diagram accurately reflects the responsibilities, data handled, and major operations of each module.
 
-### 5.2 Use-Case Realizations
+### 5.2 Sequence Diagrams
 
-#### 5.2.1 Schedule Appointment
+#### 5.2.1 Schedule Appointment Sequence Diagram
 
-##### Figure 5.2: Schedule Appointment Sequence Diagram
-Diagram source: `../docs/diagrams/schedule-appointment-sequence.puml`
+##### Schedule Appointment Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/01-schedule-appointment/schedule-appointment-sequence.puml`
 
-This sequence diagram traces how an existing order is selected, validated, and rescheduled through the chatbot conversation flow. It emphasizes the fact that the operation updates an existing stored order rather than creating a separate appointment entity.
+Short explanation: This sequence diagram traces how an existing order is selected, validated, and rescheduled through the chatbot conversation flow. It emphasizes the fact that the operation updates an existing stored order rather than creating a separate appointment entity.
 
-##### Figure 5.3: Schedule Appointment Object Diagram
-Diagram source: `../docs/diagrams/schedule-appointment-object.puml`
+#### 5.2.2 Receive Reminders Sequence Diagram
 
-This object diagram presents a runtime snapshot of a customer, a selected order, and the chatbot session state while the reschedule flow is in progress.
+##### Receive Reminders Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/02-receive-reminders/receive-reminders-sequence.puml`
 
-##### Figure 5.4: Schedule Appointment State Diagram
-Diagram source: `../docs/diagrams/schedule-appointment-state.puml`
+Short explanation: This sequence diagram shows how the reminder scheduler checks due reminders, sends the WhatsApp message, and records both the order update and reminder log entry.
 
-This state diagram summarizes the implemented scheduling lifecycle around an order, including unscheduled, scheduled, rescheduled, completed, and cancelled conditions.
+#### 5.2.3 View Dashboard Sequence Diagram
 
-#### 5.2.2 Receive Reminders
+##### View Dashboard Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/03-view-dashboard/view-dashboard-sequence.puml`
 
-##### Figure 5.5: Receive Reminders Sequence Diagram
-Diagram source: `../docs/diagrams/receive-reminders-sequence.puml`
+Short explanation: This sequence diagram models the login and data-loading behaviour of the dashboard. It reflects the actual token-based API access implemented in the browser-side script and Express server.
 
-This sequence diagram shows how the reminder scheduler checks due reminders, sends the WhatsApp message, and records both the order update and reminder log entry.
+#### 5.2.4 Update Pricing Sequence Diagram
 
-##### Figure 5.6: Receive Reminders Object Diagram
-Diagram source: `../docs/diagrams/receive-reminders-object.puml`
+##### Update Pricing Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/04-update-pricing/update-pricing-sequence.puml`
 
-This object diagram captures the state of a due order, the reminder logger, and the scheduler context at the point a reminder becomes eligible for delivery.
+Short explanation: This sequence diagram documents the price-maintenance process that is currently supported by the codebase: editing the catalog file and restarting the application so the pricing service can reload it.
 
-##### Figure 5.7: Reminder Lifecycle State Diagram
-Diagram source: `../docs/diagrams/receive-reminders-state.puml`
+#### 5.2.5 Update Job Status Sequence Diagram
 
-This state diagram shows how reminder-related fields evolve from unscheduled to due, sent, failed, and rescheduled conditions.
+##### Update Job Status Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/05-update-job-status/update-job-status-sequence.puml`
 
-#### 5.2.3 View Dashboard
-
-##### Figure 5.8: View Dashboard Sequence Diagram
-Diagram source: `../docs/diagrams/view-dashboard-sequence.puml`
-
-This sequence diagram models the login and data-loading behaviour of the dashboard. It reflects the actual token-based API access implemented in the browser-side script and Express server.
-
-##### Figure 5.9: View Dashboard Object Diagram
-Diagram source: `../docs/diagrams/view-dashboard-object.puml`
-
-This object diagram presents the authenticated admin session, dashboard page, and current order collection that together form the dashboard view.
-
-#### 5.2.4 Update Pricing
-
-##### Figure 5.10: Update Pricing Sequence Diagram
-Diagram source: `../docs/diagrams/update-pricing-sequence.puml`
-
-This sequence diagram documents the price-maintenance process that is currently supported by the codebase: editing the catalog file and restarting the application so the pricing service can reload it.
-
-##### Figure 5.11: Update Pricing Object Diagram
-Diagram source: `../docs/diagrams/update-pricing-object.puml`
-
-This object diagram shows a maintainer, the pricing catalog file, and a representative product entry at the moment catalog maintenance is performed.
+Short explanation: This sequence diagram models the administrator's status change, the persisted order update, and the automatic customer notification that follows when the status value has changed.
 
 > TODO: If the team adds a runtime pricing editor later, both this section and its diagrams should be replaced with the implemented dashboard-based flow.
 
-#### 5.2.5 Update Job Status
+#### 5.2.6 Send Completion Message Sequence Diagram
 
-##### Figure 5.12: Update Job Status Sequence Diagram
-Diagram source: `../docs/diagrams/update-job-status-sequence.puml`
+##### Send Completion Message Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/06-send-completion-message/send-completion-message-sequence.puml`
 
-This sequence diagram models the administrator's status change, the persisted order update, and the automatic customer notification that follows when the status value has changed.
+Short explanation: This sequence diagram follows the explicit ready-notification action triggered from the dashboard's bell icon and sent through the `/api/notify/:id` endpoint.
 
-##### Figure 5.13: Update Job Status Object Diagram
-Diagram source: `../docs/diagrams/update-job-status-object.puml`
+#### 5.2.7 Send Proactive Notification Sequence Diagram
 
-This object diagram captures the order, current admin session, and selected status value involved in a dashboard-based status update.
+##### Send Proactive Notification Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/07-send-proactive-notification/send-proactive-notification-sequence.puml`
 
-##### Figure 5.14: Order Status State Diagram
-Diagram source: `../docs/diagrams/update-job-status-state.puml`
+Short explanation: This sequence diagram focuses on the push-notification aspect of a status change. Unlike the previous use case, the emphasis here is on the proactive communication path rather than the status persistence itself.
 
-This state diagram reflects the status values currently exposed in the dashboard interface and stored in the order records.
+#### 5.2.8 Request Quotation Sequence Diagram
 
-#### 5.2.6 Send Completion Message
+##### Request Quotation Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/08-request-quotation/request-quotation-sequence.puml`
 
-##### Figure 5.15: Send Completion Message Sequence Diagram
-Diagram source: `../docs/diagrams/send-completion-message-sequence.puml`
+Short explanation: This sequence diagram shows how the chatbot gathers quotation inputs, invokes pricing logic, calculates cart totals, and generates an estimate PDF for the customer.
 
-This sequence diagram follows the explicit ready-notification action triggered from the dashboard's bell icon and sent through the `/api/notify/:id` endpoint.
+#### 5.2.9 Check Order Status Sequence Diagram
 
-##### Figure 5.16: Send Completion Message Object Diagram
-Diagram source: `../docs/diagrams/send-completion-message-object.puml`
+##### Check Order Status Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/09-check-order-status/check-order-status-sequence.puml`
 
-This object diagram shows the order selected for completion notification together with the customer endpoint and the administrator action context.
+Short explanation: This sequence diagram shows the status-lookup path where the bot retrieves stored orders by phone number and returns the current statuses to the customer.
 
-#### 5.2.7 Send Proactive Notification
+#### 5.2.10 Retrieve Booking Sequence Diagram
 
-##### Figure 5.17: Send Proactive Notification Sequence Diagram
-Diagram source: `../docs/diagrams/send-proactive-notification-sequence.puml`
+##### Retrieve Booking Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/10-retrieve-booking/retrieve-booking-sequence.puml`
 
-This sequence diagram focuses on the push-notification aspect of a status change. Unlike the previous use case, the emphasis here is on the proactive communication path rather than the status persistence itself.
+Short explanation: This sequence diagram shows how the manage-orders flow retrieves active bookings and presents them as selectable options for self-service actions.
 
-##### Figure 5.18: Send Proactive Notification Object Diagram
-Diagram source: `../docs/diagrams/send-proactive-notification-object.puml`
+#### 5.2.11 Cancel Booking Sequence Diagram
 
-This object diagram presents the updated order state and generated outbound message that together represent the proactive-notification event.
+##### Cancel Booking Sequence Diagram
+Diagram source: `../docs/diagrams/use-cases/11-cancel-booking/cancel-booking-sequence.puml`
+
+Short explanation: This sequence diagram shows the cancellation-confirmation flow in which the customer confirms removal of a booking and the orders store deletes it.
+
+### 5.3 Object Diagrams
+
+#### 5.3.1 Schedule Appointment Object Diagram
+
+##### Schedule Appointment Object Diagram
+Diagram source: `../docs/diagrams/use-cases/01-schedule-appointment/schedule-appointment-object.puml`
+
+Short explanation: This object diagram presents a runtime snapshot of a customer, a selected order, and the chatbot session state while the reschedule flow is in progress.
+
+#### 5.3.2 Receive Reminders Object Diagram
+
+##### Receive Reminders Object Diagram
+Diagram source: `../docs/diagrams/use-cases/02-receive-reminders/receive-reminders-object.puml`
+
+Short explanation: This object diagram captures the state of a due order, the reminder logger, and the scheduler context at the point a reminder becomes eligible for delivery.
+
+#### 5.3.3 View Dashboard Object Diagram
+
+##### View Dashboard Object Diagram
+Diagram source: `../docs/diagrams/use-cases/03-view-dashboard/view-dashboard-object.puml`
+
+Short explanation: This object diagram presents the authenticated admin session, dashboard page, and current order collection that together form the dashboard view.
+
+#### 5.3.4 Update Pricing Object Diagram
+
+##### Update Pricing Object Diagram
+Diagram source: `../docs/diagrams/use-cases/04-update-pricing/update-pricing-object.puml`
+
+Short explanation: This object diagram shows a maintainer, the pricing catalog file, and a representative product entry at the moment catalog maintenance is performed.
+
+#### 5.3.5 Update Job Status Object Diagram
+
+##### Update Job Status Object Diagram
+Diagram source: `../docs/diagrams/use-cases/05-update-job-status/update-job-status-object.puml`
+
+Short explanation: This object diagram captures the order, current admin session, and selected status value involved in a dashboard-based status update.
+
+#### 5.3.6 Send Completion Message Object Diagram
+
+##### Send Completion Message Object Diagram
+Diagram source: `../docs/diagrams/use-cases/06-send-completion-message/send-completion-message-object.puml`
+
+Short explanation: This object diagram shows the order selected for completion notification together with the customer endpoint and the administrator action context.
+
+#### 5.3.7 Send Proactive Notification Object Diagram
+
+##### Send Proactive Notification Object Diagram
+Diagram source: `../docs/diagrams/use-cases/07-send-proactive-notification/send-proactive-notification-object.puml`
+
+Short explanation: This object diagram presents the updated order state and generated outbound message that together represent the proactive-notification event.
+
+#### 5.3.8 Request Quotation Object Diagram
+
+##### Request Quotation Object Diagram
+Diagram source: `../docs/diagrams/use-cases/08-request-quotation/request-quotation-object.puml`
+
+Short explanation: This object diagram captures the customer, the quote cart, and the generated estimate document at the point where a quotation has been produced.
+
+#### 5.3.9 Check Order Status Object Diagram
+
+##### Check Order Status Object Diagram
+Diagram source: `../docs/diagrams/use-cases/09-check-order-status/check-order-status-object.puml`
+
+Short explanation: This object diagram shows a customer linked to an order-status response that summarizes the status of matching stored orders.
+
+#### 5.3.10 Retrieve Booking Object Diagram
+
+##### Retrieve Booking Object Diagram
+Diagram source: `../docs/diagrams/use-cases/10-retrieve-booking/retrieve-booking-object.puml`
+
+Short explanation: This object diagram shows the customer, a representative booking, and the menu object used to present active bookings during the manage-orders flow.
+
+#### 5.3.11 Cancel Booking Object Diagram
+
+##### Cancel Booking Object Diagram
+Diagram source: `../docs/diagrams/use-cases/11-cancel-booking/cancel-booking-object.puml`
+
+Short explanation: This object diagram shows the customer, the selected booking, and the confirmation request used to complete the cancellation workflow.
+
+### 5.4 State Diagrams
+
+#### 5.4.1 Schedule Appointment State Diagram
+
+##### Schedule Appointment State Diagram
+Diagram source: `../docs/diagrams/use-cases/01-schedule-appointment/schedule-appointment-state.puml`
+
+Short explanation: This state diagram summarizes the implemented scheduling lifecycle around an order, including unscheduled, scheduled, rescheduled, completed, and cancelled conditions.
+
+#### 5.4.2 Reminder Lifecycle State Diagram
+
+##### Reminder Lifecycle State Diagram
+Diagram source: `../docs/diagrams/use-cases/02-receive-reminders/receive-reminders-state.puml`
+
+Short explanation: This state diagram shows how reminder-related fields evolve from unscheduled to due, sent, failed, and rescheduled conditions.
+
+#### 5.4.3 Order Status State Diagram
+
+##### Order Status State Diagram
+Diagram source: `../docs/diagrams/use-cases/05-update-job-status/update-job-status-state.puml`
+
+Short explanation: This state diagram reflects the status values currently exposed in the dashboard interface and stored in the order records.
 
 ## 6. Implementation
 

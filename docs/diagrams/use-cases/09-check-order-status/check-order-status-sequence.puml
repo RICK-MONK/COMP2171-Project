@@ -1,0 +1,16 @@
+@startuml
+title Check Order Status Sequence Diagram
+
+actor Customer
+participant "WhatsApp Bot\n(src/bot.js)" as Bot
+participant "Order Helpers\n(src/botHelpers.js)" as Helpers
+participant "Orders Store\n(src/orders.js)" as Orders
+
+Customer -> Bot : Select Get Order Status
+Bot -> Helpers : sendOrderStatusList(userId)
+Helpers -> Orders : getOrdersForUser(phone)
+Orders --> Helpers : matching orders
+Helpers --> Bot : formatted order-status list
+Bot --> Customer : Show current order statuses
+
+@enduml

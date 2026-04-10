@@ -1,0 +1,22 @@
+@startuml
+title Retrieve Booking Object Diagram
+
+object "customer1:Customer" as customer1 {
+  phoneNumber = "18767835744"
+}
+
+object "booking1:Order" as booking1 {
+  id = "0161166"
+  scheduledDate = "2026-03-25"
+  scheduleTime = "10:00 AM"
+  status = "PENDING DELIVERY"
+}
+
+object "menu1:ManageOrdersMenu" as menu1 {
+  optionsShown = 1
+}
+
+customer1 -- menu1
+menu1 -- booking1
+
+@enduml

@@ -1,0 +1,67 @@
+@startuml
+title Package Diagram
+
+package "Entry" {
+  [index.js]
+}
+
+package "src.conversation" {
+  [bot.js]
+  [botHelpers.js]
+  [orderUtils.js]
+}
+
+package "src.web" {
+  [server.js]
+}
+
+package "src.services" {
+  [pricing.js]
+  [invoice.js]
+  [email.js]
+  [reminderScheduler.js]
+  [reminders.js]
+  [config.js]
+}
+
+package "src.persistence" {
+  [orders.js]
+}
+
+package "public" {
+  [login.html]
+  [dashboard.html]
+  [js/script.js]
+  [css/style.css]
+}
+
+package "data files" {
+  [prices.json]
+  [orders.json]
+  [reminders.json]
+  [cleaning_supply.json]
+}
+
+[index.js] --> [bot.js]
+[index.js] --> [server.js]
+[index.js] --> [reminderScheduler.js]
+[index.js] --> [config.js]
+[bot.js] --> [botHelpers.js]
+[bot.js] --> [orderUtils.js]
+[bot.js] --> [pricing.js]
+[bot.js] --> [invoice.js]
+[bot.js] --> [email.js]
+[server.js] --> [orders.js]
+[server.js] --> [invoice.js]
+[server.js] --> [email.js]
+[reminderScheduler.js] --> [orders.js]
+[reminderScheduler.js] --> [reminders.js]
+[config.js] --> [prices.json]
+[orders.js] --> [orders.json]
+[reminders.js] --> [reminders.json]
+[bot.js] --> [cleaning_supply.json]
+[dashboard.html] --> [js/script.js]
+[dashboard.html] --> [css/style.css]
+[js/script.js] --> [server.js]
+
+@enduml

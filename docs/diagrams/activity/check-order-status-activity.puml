@@ -1,0 +1,16 @@
+@startuml
+title Check Order Status Activity Diagram
+
+start
+:Customer selects "Get Order Status";
+:Load orders for current phone number;
+if (Matching orders found?) then (yes)
+  :Format order status list;
+  :Send current statuses;
+  stop
+else (no)
+  :Show "No pending orders found";
+  stop
+endif
+
+@enduml

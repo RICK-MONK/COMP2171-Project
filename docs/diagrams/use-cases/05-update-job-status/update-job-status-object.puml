@@ -1,0 +1,21 @@
+@startuml
+title Update Job Status Object Diagram
+
+object "admin1:Admin" as admin1 {
+  username = "admin"
+}
+
+object "order1:Order" as order1 {
+  id = "8453368"
+  oldStatus = "PENDING DELIVERY"
+  status = "IN PROGRESS"
+}
+
+object "row1:DashboardOrderRow" as row1 {
+  selectedStatus = "IN PROGRESS"
+}
+
+admin1 -- row1
+row1 -- order1
+
+@enduml

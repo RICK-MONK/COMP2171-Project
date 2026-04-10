@@ -1,0 +1,21 @@
+@startuml
+title Send Proactive Notification Activity Diagram
+
+start
+:Administrator changes order status;
+:Save updated status;
+if (Status changed?) then (yes)
+  :Generate status-update message;
+  if (WhatsApp available?) then (yes)
+    :Send proactive notification;
+    stop
+  else (no)
+    :Log notification failure;
+    stop
+  endif
+else (no)
+  :Do not send notification;
+  stop
+endif
+
+@enduml

@@ -1,0 +1,22 @@
+@startuml
+title Send Proactive Notification Object Diagram
+
+object "order1:Order" as order1 {
+  id = "6213"
+  oldStatus = "PENDING DELIVERY"
+  status = "READY"
+  phone = "8765550188"
+}
+
+object "message1:NotificationMessage" as message1 {
+  text = "Update on Order #6213\\n\\nStatus changed to: READY"
+}
+
+object "customer1:Customer" as customer1 {
+  phoneNumber = "8765550188"
+}
+
+order1 -- message1
+customer1 -- message1
+
+@enduml

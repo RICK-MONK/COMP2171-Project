@@ -1,0 +1,24 @@
+@startuml
+title Schedule Appointment Sequence Diagram
+
+actor Customer
+participant "WhatsApp Bot\n(src/bot.js)" as Bot
+participant "Order Helpers\n(src/botHelpers.js)" as Helpers
+participant "Orders Store\n(src/orders.js)" as Orders
+
+Customer -> Bot : Select "Manage Orders"
+Bot -> Helpers : buildManageOrderPoll(userId)
+Helpers -> Orders : getOrdersForUser(phone)
+Orders --> Helpers : active orders
+Helpers --> Bot : poll options
+Bot --> Customer : Show active orders
+Customer -> Bot : Select order and choose Reschedule
+Bot --> Customer : Request new date
+Customer -> Bot : Submit YYYY-MM-DD
+Bot --> Customer : Request new time
+Customer -> Bot : Submit HH:MM / HH:MM AM-PM
+Bot -> Orders : updateOrder(id, scheduledDate, scheduleTime)
+Orders --> Bot : updated order
+Bot --> Customer : Confirm new appointment details
+
+@enduml

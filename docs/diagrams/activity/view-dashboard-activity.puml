@@ -1,0 +1,23 @@
+@startuml
+title View Dashboard Activity Diagram
+
+start
+:Administrator opens login page;
+:Submit username and password;
+if (Credentials valid?) then (yes)
+  :Generate auth token;
+  :Load dashboard page;
+  :Request orders and system status;
+  if (API responses successful?) then (yes)
+    :Render charts, tables, and connection state;
+    stop
+  else (no)
+    :Show dashboard loading error;
+    stop
+  endif
+else (no)
+  :Show authentication error;
+  stop
+endif
+
+@enduml

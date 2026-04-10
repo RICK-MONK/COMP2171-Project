@@ -1,0 +1,20 @@
+@startuml
+title Update Job Status Activity Diagram
+
+start
+:Administrator opens order table;
+:Select order and choose new status;
+:Submit status update;
+if (Order exists?) then (yes)
+  :Persist new status;
+  if (Status changed?) then (yes)
+    :Attempt proactive WhatsApp notification;
+  endif
+  :Refresh dashboard row;
+  stop
+else (no)
+  :Show order not found error;
+  stop
+endif
+
+@enduml

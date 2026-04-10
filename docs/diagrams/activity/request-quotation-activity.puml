@@ -1,0 +1,25 @@
+@startuml
+title Request Quotation Activity Diagram
+
+start
+:Customer opens Goods/Services flow;
+:Select product category and item;
+:Enter dimensions or quantity;
+if (Input valid?) then (yes)
+  :Calculate price;
+  :Show estimate summary;
+  if (Customer finishes quote?) then (yes)
+    :Build estimate order model;
+    :Generate estimate PDF;
+    :Send quotation document;
+    stop
+  else (no)
+    :Continue quotation flow;
+    stop
+  endif
+else (no)
+  :Prompt for corrected input;
+  stop
+endif
+
+@enduml

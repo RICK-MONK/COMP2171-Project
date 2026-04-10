@@ -1,0 +1,16 @@
+@startuml
+title Retrieve Booking Activity Diagram
+
+start
+:Customer selects "Manage Orders";
+:Load orders for current phone number;
+:Filter active bookings;
+if (Any active bookings?) then (yes)
+  :Present selectable booking list;
+  stop
+else (no)
+  :Show "No upcoming appointments found";
+  stop
+endif
+
+@enduml

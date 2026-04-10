@@ -1,0 +1,20 @@
+@startuml
+title Cancel Booking Object Diagram
+
+object "customer1:Customer" as customer1 {
+  phoneNumber = "18767835744"
+}
+
+object "booking1:Order" as booking1 {
+  id = "0161166"
+  status = "PENDING DELIVERY"
+}
+
+object "cancel1:CancellationRequest" as cancel1 {
+  confirmed = true
+}
+
+customer1 -- cancel1
+cancel1 -- booking1
+
+@enduml

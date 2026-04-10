@@ -1,0 +1,17 @@
+@startuml
+title Retrieve Booking Sequence Diagram
+
+actor Customer
+participant "WhatsApp Bot\n(src/bot.js)" as Bot
+participant "Order Helpers\n(src/botHelpers.js)" as Helpers
+participant "Orders Store\n(src/orders.js)" as Orders
+
+Customer -> Bot : Select Manage Orders
+Bot -> Helpers : buildManageOrderPoll(userId)
+Helpers -> Orders : getOrdersForUser(phone)
+Orders --> Helpers : user orders
+Helpers -> Helpers : filter active bookings
+Helpers --> Bot : selectable order list
+Bot --> Customer : Present upcoming bookings
+
+@enduml

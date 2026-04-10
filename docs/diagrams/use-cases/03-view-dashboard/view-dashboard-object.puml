@@ -1,0 +1,22 @@
+@startuml
+title View Dashboard Object Diagram
+
+object "admin1:Admin" as admin1 {
+  username = "admin"
+  authToken = "secure-session-token"
+}
+
+object "dashboard:DashboardView" as dashboard {
+  activeTab = "dashboard"
+  totalRevenue = "$52,340.00"
+  completedOrders = 8
+}
+
+object "orders:OrderCollection" as orders {
+  count = 12
+}
+
+admin1 -- dashboard
+dashboard -- orders
+
+@enduml

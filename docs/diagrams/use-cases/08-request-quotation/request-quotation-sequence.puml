@@ -1,0 +1,27 @@
+@startuml
+title Request Quotation Sequence Diagram
+
+actor Customer
+participant "WhatsApp Bot\n(src/bot.js)" as Bot
+participant "Catalog Helpers\n(src/botHelpers.js)" as Catalog
+participant "Pricing Service\n(src/pricing.js)" as Pricing
+participant "Order Utils\n(src/orderUtils.js)" as Utils
+participant "Invoice Service\n(src/invoice.js)" as Invoice
+
+Customer -> Bot : Select Goods/Services and product
+Bot -> Catalog : buildCatalog(config)
+Catalog --> Bot : available product options
+Customer -> Bot : Enter dimensions or quantity
+Bot -> Pricing : calculatePrice(productKey, width, height, quantity)
+Pricing --> Bot : quote result
+Bot -> Utils : calculateCartTotals(cart)
+Utils --> Bot : updated totals
+Bot --> Customer : Show estimate summary
+Customer -> Bot : Finish and get PDF
+Bot -> Utils : buildOrderFromCart(...)
+Utils --> Bot : estimate order model
+Bot -> Invoice : generateInvoicePDF(order, fileName, "ESTIMATE")
+Invoice --> Bot : PDF path
+Bot --> Customer : Send estimate PDF
+
+@enduml

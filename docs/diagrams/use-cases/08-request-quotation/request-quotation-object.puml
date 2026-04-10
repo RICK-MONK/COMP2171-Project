@@ -1,0 +1,24 @@
+@startuml
+title Request Quotation Object Diagram
+
+object "customer1:Customer" as customer1 {
+  phoneNumber = "8765550101"
+  displayName = "Customer"
+}
+
+object "quote1:QuoteCart" as quote1 {
+  selectedProduct = "Illusion Roller Shades (Cat 3)"
+  width = 36
+  height = 48
+  total = "22566.80"
+}
+
+object "estimate1:EstimateDocument" as estimate1 {
+  documentType = "ESTIMATE"
+  fileName = "Estimate_2364594.pdf"
+}
+
+customer1 -- quote1
+quote1 -- estimate1
+
+@enduml

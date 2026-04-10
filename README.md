@@ -31,6 +31,8 @@ This repository contains a COMP2171 software engineering project built around a 
 
 For the smoothest setup, use Node.js 20 LTS. The project may still run on other versions, but the codebase itself warns that `whatsapp-web.js` is more reliable on Node 20.
 
+This README includes the information needed for a marker to run and verify the system without guesswork. It explains how to install and start the project, which pages to open in the browser, how to access the main dashboard sections, how to test the WhatsApp bot workflow, and the current admin login credentials required to access the protected dashboard features.
+
 ### 1. Install and start
 
 1. Run `npm install`

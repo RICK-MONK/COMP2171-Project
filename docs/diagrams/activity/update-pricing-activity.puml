@@ -1,0 +1,18 @@
+@startuml
+title Update Pricing Activity Diagram
+
+start
+:Maintainer opens prices.json;
+:Edit product definitions or prices;
+if (JSON valid?) then (yes)
+  :Save updated catalog file;
+  :Restart or reload application;
+  :Pricing service loads revised catalog;
+  :New quotations use updated prices;
+  stop
+else (no)
+  :Fix invalid catalog data;
+  stop
+endif
+
+@enduml

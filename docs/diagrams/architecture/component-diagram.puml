@@ -1,0 +1,47 @@
+@startuml
+title Component Diagram
+left to right direction
+
+actor Customer
+actor Administrator
+
+component "WhatsApp Bot Controller\n(src/bot.js)" as Bot
+component "Admin Dashboard UI\n(public/*.html, public/js/script.js)" as Dashboard
+component "Express API Server\n(src/server.js)" as Api
+component "Pricing Service\n(src/pricing.js)" as Pricing
+component "Order Store\n(src/orders.js)" as Orders
+component "Reminder Scheduler\n(src/reminderScheduler.js)" as Scheduler
+component "Reminder Logger\n(src/reminders.js)" as ReminderLog
+component "Invoice Service\n(src/invoice.js)" as Invoice
+component "Email Service\n(src/email.js)" as Email
+component "Configuration Loader\n(src/config.js)" as Config
+
+database "prices.json" as PricesFile
+database "orders.json" as OrdersFile
+database "reminders.json" as ReminderFile
+database "cleaning_supply.json" as SupplyFile
+
+cloud "WhatsApp Network" as WhatsApp
+
+Customer --> WhatsApp
+WhatsApp --> Bot
+Administrator --> Dashboard
+Dashboard --> Api
+Api --> Orders
+Api --> Invoice
+Api --> Email
+Api --> Bot : getSystemStatus()/send notification
+Bot --> Pricing
+Bot --> Orders
+Bot --> Invoice
+Bot --> Email
+Bot --> SupplyFile
+Scheduler --> Orders
+Scheduler --> ReminderLog
+Scheduler --> Bot : WhatsApp client
+Config --> PricesFile
+Pricing --> PricesFile
+Orders --> OrdersFile
+ReminderLog --> ReminderFile
+
+@enduml

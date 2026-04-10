@@ -1,0 +1,21 @@
+@startuml
+title Send Completion Message Activity Diagram
+
+start
+:Administrator clicks "Notify Ready";
+:Send notify request to server;
+if (Order exists?) then (yes)
+  if (WhatsApp available?) then (yes)
+    :Send completion message;
+    :Show success feedback;
+    stop
+  else (no)
+    :Show delivery error;
+    stop
+  endif
+else (no)
+  :Show order not found error;
+  stop
+endif
+
+@enduml

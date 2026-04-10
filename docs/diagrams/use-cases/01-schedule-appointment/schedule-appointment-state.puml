@@ -1,0 +1,15 @@
+@startuml
+title Schedule Appointment State Diagram
+
+[*] --> Unscheduled
+Unscheduled --> Scheduled : order assigned date/time
+Scheduled --> Rescheduled : customer changes date/time
+Rescheduled --> Rescheduled : reschedule again
+Scheduled --> Completed : delivered or picked up
+Rescheduled --> Completed : delivered or picked up
+Scheduled --> Cancelled : order cancelled
+Rescheduled --> Cancelled : order cancelled
+Completed --> [*]
+Cancelled --> [*]
+
+@enduml

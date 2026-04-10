@@ -1,0 +1,20 @@
+@startuml
+title Check Order Status Object Diagram
+
+object "customer1:Customer" as customer1 {
+  phoneNumber = "18767835744"
+}
+
+object "order1:Order" as order1 {
+  id = "2364594"
+  status = "IN PROGRESS"
+}
+
+object "statusList:OrderStatusResponse" as statusList {
+  visibleOrders = 2
+}
+
+customer1 -- statusList
+statusList -- order1
+
+@enduml

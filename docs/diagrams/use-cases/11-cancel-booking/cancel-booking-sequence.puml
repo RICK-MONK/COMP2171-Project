@@ -1,0 +1,15 @@
+@startuml
+title Cancel Booking Sequence Diagram
+
+actor Customer
+participant "WhatsApp Bot\n(src/bot.js)" as Bot
+participant "Orders Store\n(src/orders.js)" as Orders
+
+Customer -> Bot : Choose order and select Cancel
+Bot --> Customer : Ask for cancellation confirmation
+Customer -> Bot : Confirm Yes, cancel
+Bot -> Orders : deleteOrder(id)
+Orders --> Bot : deletion result
+Bot --> Customer : Send cancellation confirmation
+
+@enduml

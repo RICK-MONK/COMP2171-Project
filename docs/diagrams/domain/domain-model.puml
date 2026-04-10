@@ -1,0 +1,73 @@
+@startuml
+title Domain Model
+
+hide methods
+skinparam classAttributeIconSize 0
+
+class Customer {
+  phoneNumber
+  displayName
+}
+
+class Admin {
+  username
+  authToken
+}
+
+class Order {
+  id
+  date
+  status
+  scheduledDate
+  scheduleTime
+  reminderTime
+  reminderSent
+  fulfillment
+  totalPrice
+}
+
+class OrderItem {
+  product
+  quantity
+  description
+  price
+}
+
+class ProductCatalog {
+  installationFee
+}
+
+class Product {
+  key
+  name
+  type
+  available
+}
+
+class InvoiceDocument {
+  filename
+  documentType
+}
+
+class ReminderLog {
+  orderId
+  scheduledFor
+  status
+  loggedAt
+}
+
+Customer "1" -- "0..*" Order : places/manages
+Admin "1" -- "0..*" Order : reviews/updates
+Order "1" *-- "1..*" OrderItem : contains
+ProductCatalog "1" o-- "1..*" Product : defines
+OrderItem ..> Product : priced from
+Order "0..1" --> "0..1" InvoiceDocument : generates
+Order "0..*" --> "0..*" ReminderLog : produces
+
+note right of Order
+Persistent order data is stored in orders.json.
+Reminder fields and status values are part of
+the order record in the current implementation.
+end note
+
+@enduml

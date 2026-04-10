@@ -1,0 +1,28 @@
+@startuml
+title Receive Reminders Activity Diagram
+
+start
+:Scheduler interval starts;
+:Load stored orders;
+:Filter orders with due reminderTime;
+if (Any due reminders?) then (yes)
+  if (WhatsApp client ready?) then (yes)
+    :Send reminder message;
+    if (Send successful?) then (yes)
+      :Mark reminder as sent;
+      :Write success log entry;
+      stop
+    else (no)
+      :Write failed reminder log entry;
+      stop
+    endif
+  else (no)
+    :Skip sending for this cycle;
+    stop
+  endif
+else (no)
+  :Wait for next scheduler cycle;
+  stop
+endif
+
+@enduml

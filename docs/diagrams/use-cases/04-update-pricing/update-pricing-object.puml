@@ -1,0 +1,23 @@
+@startuml
+title Update Pricing Object Diagram
+
+object "maintainer:SystemAdministrator" as maintainer {
+  role = "catalog maintainer"
+}
+
+object "catalog:ProductCatalog" as catalog {
+  source = "prices.json"
+  installationFee = 1500
+}
+
+object "product:Product" as product {
+  key = "roller_screen_1"
+  name = "Roller Shades - 1% Screen"
+  type = "grid"
+  available = true
+}
+
+maintainer -- catalog
+catalog -- product
+
+@enduml

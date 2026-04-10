@@ -1,0 +1,20 @@
+@startuml
+title Send Completion Message Sequence Diagram
+
+actor Administrator
+participant "Dashboard Script\n(public/js/script.js)" as Script
+participant "API Server\n(src/server.js)" as Api
+participant "Orders Store\n(src/orders.js)" as Orders
+participant "WhatsApp Client" as WhatsApp
+actor Customer
+
+Administrator -> Script : Click "Notify Ready"
+Script -> Api : POST /api/notify/:id
+Api -> Orders : getOrderById(id)
+Orders --> Api : selected order
+Api -> WhatsApp : sendMessage("Order is READY")
+WhatsApp --> Customer : Ready / completion message
+Api --> Script : success response
+Script --> Administrator : Show notification sent
+
+@enduml

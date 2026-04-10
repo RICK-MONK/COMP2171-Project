@@ -1,0 +1,13 @@
+@startuml
+title Reminder Lifecycle State Diagram
+
+[*] --> NotScheduled
+NotScheduled --> Scheduled : reminderTime set
+Scheduled --> Due : reminder time reached
+Due --> Sent : WhatsApp send succeeds
+Due --> Failed : WhatsApp send fails
+Sent --> Rescheduled : reminderTime edited again
+Failed --> Scheduled : retry on later tick
+Rescheduled --> Due : new reminder time reached
+
+@enduml
