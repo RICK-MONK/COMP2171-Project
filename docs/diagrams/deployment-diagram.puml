@@ -1,0 +1,37 @@
+@startuml
+title Figure 4.3: Deployment Diagram
+
+node "Customer Device" as CustomerDevice {
+  artifact "WhatsApp Mobile App"
+}
+
+node "Administrator Device" as AdminDevice {
+  artifact "Web Browser"
+}
+
+cloud "WhatsApp Service" as WhatsAppCloud
+
+node "Application Host" as Host {
+  node "Node.js Runtime" as NodeRuntime {
+    artifact "Express Server\n(src/server.js)"
+    artifact "WhatsApp Bot\n(src/bot.js)"
+    artifact "Reminder Scheduler\n(src/reminderScheduler.js)"
+    artifact "Static Dashboard Files\n(public/)"
+  }
+
+  folder "Local File Storage" as Files {
+    artifact "prices.json"
+    artifact "orders.json"
+    artifact "reminders.json"
+    artifact "cleaning_supply.json"
+    artifact "public/invoices/"
+    artifact ".wwebjs_auth/"
+  }
+}
+
+CustomerDevice --> WhatsAppCloud
+WhatsAppCloud --> NodeRuntime
+AdminDevice --> NodeRuntime : HTTP / dashboard access
+NodeRuntime --> Files
+
+@enduml

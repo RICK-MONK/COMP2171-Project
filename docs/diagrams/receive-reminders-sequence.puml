@@ -1,0 +1,19 @@
+@startuml
+title Figure 5.5: Receive Reminders Sequence Diagram
+
+participant "Reminder Scheduler\n(src/reminderScheduler.js)" as Scheduler
+participant "Orders Store\n(src/orders.js)" as Orders
+participant "WhatsApp Client" as WhatsApp
+participant "Reminder Logger\n(src/reminders.js)" as Log
+actor Customer
+
+Scheduler -> Orders : getAllOrders()
+Orders --> Scheduler : order list
+Scheduler -> Scheduler : filter due reminders
+Scheduler -> WhatsApp : sendMessage(phone, reminder text)
+WhatsApp --> Customer : Reminder message
+Scheduler -> Orders : updateOrder(id, reminderSent=true,\nreminderSentAt=timestamp)
+Orders --> Scheduler : updated order
+Scheduler -> Log : logReminder(status="SENT")
+
+@enduml

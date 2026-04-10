@@ -1,0 +1,26 @@
+@startuml
+title Figure 5.8: View Dashboard Sequence Diagram
+
+actor Administrator
+participant "Login Page\n(public/login.html)" as Login
+participant "Dashboard Script\n(public/js/script.js)" as Script
+participant "API Server\n(src/server.js)" as Api
+participant "Orders Store\n(src/orders.js)" as Orders
+participant "Bot Status\n(getSystemStatus)" as Status
+
+Administrator -> Login : Enter username and password
+Login -> Script : attemptLogin()
+Script -> Api : POST /api/login
+Api --> Script : auth token
+Script --> Administrator : Redirect to dashboard
+Script -> Api : GET /api/orders
+Api -> Orders : getAllOrders()
+Orders --> Api : order list
+Api --> Script : JSON orders
+Script -> Api : GET /api/status
+Api -> Status : getSystemStatus()
+Status --> Api : ready/qr/state
+Api --> Script : status JSON
+Script --> Administrator : Render table, charts, and connection panel
+
+@enduml

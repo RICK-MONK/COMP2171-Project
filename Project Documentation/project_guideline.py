@@ -1,5 +1,5 @@
 """
-Project Guideline: White Rose Chatbot/Admin Portal
+Project Guideline: COMP2171 White Rose Chatbot/Admin Portal
 --------------------------------------------------
 
 What this project does

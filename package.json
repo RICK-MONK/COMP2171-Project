@@ -1,7 +1,7 @@
 {
   "name": "white-rose-chatbot",
   "version": "1.0.0",
-  "description": "COMP2140 Project",
+  "description": "COMP2171 software engineering project for the White Rose WhatsApp order system",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

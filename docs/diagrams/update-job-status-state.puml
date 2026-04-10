@@ -1,0 +1,22 @@
+@startuml
+title Figure 5.14: Order Status State Diagram
+
+[*] --> AwaitingDeposit
+AwaitingDeposit --> DepositPaid
+DepositPaid --> PendingDelivery
+PendingDelivery --> InProgress
+InProgress --> Ready
+Ready --> Delivered
+Ready --> PickedUp
+
+AwaitingDeposit --> Cancelled
+DepositPaid --> Cancelled
+PendingDelivery --> Cancelled
+InProgress --> Cancelled
+Ready --> Cancelled
+
+Delivered --> [*]
+PickedUp --> [*]
+Cancelled --> [*]
+
+@enduml

@@ -1,6 +1,6 @@
 /**
  * File: src/email.js
- * Software Engineering Project (COMP2140)
+ * Software Engineering Project (COMP2171)
  * Student: Patrick Marsden (620169874)
  */
 
