@@ -127,3 +127,7 @@ The repository also includes `WhiteRoseBot.bat`, which attempts to open the dash
 
 - Generated files such as runtime caches, build outputs, local environment files, and generated PDFs should not be committed
 - The app can recreate the `public/invoices/` output directory as needed
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE`.
